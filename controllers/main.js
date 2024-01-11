@@ -41,3 +41,28 @@ exports.postUser = (req, res) => {
             });
         });
 };
+
+exports.login = (req,res)=>{
+    const email = req.body.email;
+    const password = req.body.password;
+
+    Users.findOne({ email: email, password: password })
+        .then(user => {
+            if (user) {
+                res.status(200).json({
+                    message: 'User login successful',
+                    user: user
+                });
+            } else {
+                res.status(401).json({
+                    message: 'User not authorized'
+                });
+            }
+        })
+        .catch(err => {
+            console.log(err);
+            res.status(500).json({
+                error: 'Internal Server Error'
+            });
+        });
+}
