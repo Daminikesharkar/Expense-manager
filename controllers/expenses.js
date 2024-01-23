@@ -1,8 +1,21 @@
-const Expense = require('../models/appointment');
+const Expense = require('../models/expense');
+const path = require('path');
+
+const expensePagePath = path.join(__dirname, '../views/addExpense.html');
+let currentUserId;
+
+exports.showExpensePage = (req,res)=>{
+    res.sendFile(expensePagePath);
+    console.log(req.query.userId)
+    currentUserId = req.query.userId;
+}
+
 
 exports.getExpense = (req,res)=>{
-
-    Expense.findAll()
+    console.log(currentUserId)
+    Expense.findAll({where: {
+        userId: currentUserId,
+      }})
     .then((expenses)=>{
         res.json({expense: expenses});
     })  
@@ -20,7 +33,8 @@ exports.addExpense = (req, res) => {
     Expense.create({
         amount: amount,
         description: description,
-        category: category 
+        category: category,
+        userId: currentUserId
 
     })
     .then((createdExpense)=>{
@@ -40,7 +54,8 @@ exports.addExpense = (req, res) => {
 }
 
 exports.deleteExpense = (req,res)=>{
-    Books.findByPk(req.params.id)
+    console.log("Deleting...",req.params.id)
+    Expense.findByPk(req.params.id)
     .then((expense)=>{
         return expense.destroy();
     })

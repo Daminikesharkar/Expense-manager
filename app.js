@@ -4,13 +4,19 @@ const path = require('path');
 const mainRoutes = require('./routes/main');
 const sequelize = require('./util/database');
 
+const User = require('./models/user');
+const Expense = require('./models/expense');
+
 const app = express();
 
 app.use(express.urlencoded({extended: false }));
 app.use(express.static(path.join(__dirname,'public')));
 app.use(express.json());
 
-sequelize.sync();
+User.hasMany(Expense);
+Expense.belongsTo(User,{constraints:true, onDelete:'CASCADE'});
+
+sequelize.sync({ alter: true });
 
 app.use(mainRoutes);
 

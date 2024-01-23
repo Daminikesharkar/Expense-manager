@@ -10,7 +10,7 @@ const password = document.getElementById('password');
 function postData(userData){
     axios.post('/addUser',userData)
         .then((response)=>{
-            addUser(response.data.appointment)
+            console.log("user successfully added!")
         }).catch((error)=>{
             console.log(error);
         })

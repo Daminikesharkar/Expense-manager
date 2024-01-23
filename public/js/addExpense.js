@@ -11,6 +11,7 @@ function addExpense(userData){
     axios.post('/addExpense',userData)
         .then((response)=>{
             console.log("Expense added!",response);
+            addUser(response.data.expense);
 
         }).catch((error)=>{
             console.log(error);

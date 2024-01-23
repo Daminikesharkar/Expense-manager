@@ -2,11 +2,19 @@ const path = require('path');
 const bcrypt = require('bcrypt');
 const indexFilePath = path.join(__dirname, '../views/index.html');
 
-const Users = require('../models/appointment');
+const Users = require('../models/user');
 
 exports.getIndex = (req, res) => {
     res.sendFile(indexFilePath);
 };
+
+exports.loginPage = (req,res)=>{
+    res.sendFile(path.join(__dirname, '../views', 'login.html'));
+}
+
+exports.signUpPage = (req,res)=>{
+    res.sendFile(path.join(__dirname, '../views', 'signUp.html'));
+}
 
 exports.postUser = (req, res) => {
     const username = req.body.username;
@@ -21,7 +29,7 @@ exports.postUser = (req, res) => {
             });
         }
 
-        Users.findOne({ email: email })
+        Users.findOne({ where: { email: email } })
             .then(existingUser => {
                 if (existingUser) {
                     return res.status(400).json({
@@ -56,7 +64,7 @@ exports.login = (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
 
-    Users.findOne({ email: email })
+    Users.findOne({ where: { email: email } })
         .then(user => {
             if (user) {
                 bcrypt.compare(password, user.password, (err, passwordMatch) => {
