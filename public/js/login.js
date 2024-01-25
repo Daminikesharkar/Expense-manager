@@ -10,9 +10,9 @@ const password = document.getElementById('password');
 function loginUser(userData){
     axios.post('/login',userData)
         .then((response)=>{
-            const userId = response.data.user.id;
-            console.log("Logged in!",response)
-            window.location.href = `/userExpenses?userId=${userId}`;
+            localStorage.setItem('token',response.data.token);
+            // window.location.href = `/userExpenses?userId=${userId}`;
+            window.location.href = `/userExpenses`;
         }).catch((error)=>{
             console.log(error);
         })

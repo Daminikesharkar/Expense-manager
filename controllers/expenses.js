@@ -2,17 +2,13 @@ const Expense = require('../models/expense');
 const path = require('path');
 
 const expensePagePath = path.join(__dirname, '../views/addExpense.html');
-let currentUserId;
 
 exports.showExpensePage = (req,res)=>{
     res.sendFile(expensePagePath);
-    console.log(req.query.userId)
-    currentUserId = req.query.userId;
 }
 
-
 exports.getExpense = (req,res)=>{
-    console.log(currentUserId)
+    const currentUserId = req.user.id;
     Expense.findAll({where: {
         userId: currentUserId,
       }})

@@ -76,7 +76,8 @@ ulList.addEventListener('click',(e)=>{
 })
 
 function displayExpenses(){
-    axios.get('/getExpenses')
+    const token = localStorage.getItem('token');
+    axios.get('/getExpenses',{headers:{"Authorization":token}})
         .then((response)=>{
             const length = Object.keys(response.data.expense).length;
             for(let i=0;i<length;i++){

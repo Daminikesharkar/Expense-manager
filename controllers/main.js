@@ -1,5 +1,6 @@
 const path = require('path');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken')
 const indexFilePath = path.join(__dirname, '../views/index.html');
 
 const Users = require('../models/user');
@@ -76,8 +77,10 @@ exports.login = (req, res) => {
                     }
 
                     if (passwordMatch) {
+                        const token = jwt.sign({ userId: user.id }, 'secretKey', { expiresIn: '1h' });
                         res.status(200).json({
                             message: 'User login successful',
+                            token: token,
                             user: user
                         });
                     } else {
