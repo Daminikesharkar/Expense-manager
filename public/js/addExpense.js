@@ -7,6 +7,31 @@ const description = document.getElementById('description');
 const category = document.getElementById('category');
 
 
+const premium = document.getElementById('premium');
+premium.addEventListener('click', ()=>{
+    axios.get('/buyPremium')
+        .then((response)=>{
+            const options = {
+                key_id: response.key_id,
+                amount: response.amount,
+                orderId: response.orderId,
+                handler: function (response) {
+                    alert('Success')
+                  },
+            }
+            var razorpay = new Razorpay(options);
+            razorpay.open();
+            razorpay.on('payment.failed', function (response) {
+                console.log(response);
+                alert('Something went wrong Transaction failed');
+    
+            });
+        })
+        .catch(error=>{
+            console.log(error);
+        })
+})
+
 function addExpense(userData){
     axios.post('/addExpense',userData)
         .then((response)=>{

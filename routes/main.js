@@ -3,6 +3,7 @@ const express = require('express');
 const mainController = require('../controllers/main');
 const expenseController = require('../controllers/expenses');
 const authentication = require('../middleware/authenticate');
+const premiumMembershipPurchace = require('../controllers/premiumMembership')
 
 const router = express.Router();
 
@@ -18,5 +19,8 @@ router.get('/userExpenses',expenseController.showExpensePage)
 router.post('/addExpense',authentication.authenticate,expenseController.addExpense);
 router.get('/getExpenses',authentication.authenticate,expenseController.getExpense);
 router.get('/deleteExpense/:id',authentication.authenticate,expenseController.deleteExpense);
+
+//premium membership purchase routes
+router.get('/buyPremium',authentication.authenticate,premiumMembershipPurchace.purchasePremiumMembership);
 
 module.exports = router;
