@@ -26,11 +26,13 @@ exports.addExpense = (req, res) => {
     const description = req.body.description;
     const category = req.body.category;
 
+    console.log("In",amount)
+
     Expense.create({
         amount: amount,
         description: description,
         category: category,
-        userId: currentUserId
+        // userId: req.user.id
 
     })
     .then((createdExpense)=>{

@@ -1,28 +1,63 @@
-const Razorpay = require('razorpay')
-const key_id = 'rzp_test_lmIdbBMaVqEVXQ';
-const key_secret = 'Au1P7pT2Vbu7Ffm67KP4spxM';
+const Razorpay = require('razorpay');
+const Order = require('../models/order');
+const key_id = "rzp_test_hZ745IA6GAHJWc";
+const key_secret = "6183w3iLaSB1wFJftiQTRkww";
 
-exports.purchasePremiumMembership = (req,res)=>{
-    const razorpayInstance = new Razorpay({
-        key_id: key_id,
-        key_secret:key_secret        
-    })
+exports.purchasePremiumMembership = async(req,res)=>{
+    console.log("Inside")
 
-    const amount = 1000;
-    const options = {
-        amount:amount,
-        currency: 'INR',
+    try {
+        var rzp = new Razorpay({
+            key_id: key_id,
+            key_secret:key_secret
+        })
+            
+        console.log("Inside2",rzp);
+
+        var options = {
+            amount: 100000,
+            currency: "INR",
+        };
+        
+        rzp.orders.create(options,(err,order)=>{
+            if(err){
+                console.error(err);
+                return res.status(500).json({ error: 'Internal Server Error' });  
+            }
+            req.user.createOrder({
+                orderId: order.id,
+                status: "PENDING",
+            }).then(()=>{
+                return res.status(200).json({ orderId: order.id, amount: order.amount, key_id: key_id });
+            }).catch((err)=>{
+                console.log(err);
+            })
+        })
+        
+    } catch (error) {
+        console.log(error)
     }
-
-    razorpayInstance.orders.create(options,(err,order)=>{
-        if (err) {
-            console.error(err);
-            return res.status(500).json({ error: 'Internal Server Error' });
-        }else{
-            res.json({ orderId: order.id, amount: order.amount, key_id: key_id });
-        }      
-    })
 }
 
+exports.updateTransaction = async(req,res) =>{
+    try {
+        const { order_id, payment_id } = req.body;
+ 
+        Order.findOne({where:{orderId:order_id}}).then((order)=>{
+            order.update({paymentId:payment_id,status:"SUCCESSFUL"}).then(()=>{
+                req.user.update({ispremiumuser:true}).then(()=>{
+                    return res.status(200).json({ success: true, msg: "Transaction Successful" });
+                }).catch((err)=>{
+                    console.log(err);
+                })
+            }).catch((err)=>{
+                console.log(err)
+            })
+        }).catch((err)=>{
+            console.log(err)
+        })        
+    } catch (error) {
+        console.log(error)
+    }
 
-
+}

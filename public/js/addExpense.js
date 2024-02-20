@@ -1,4 +1,5 @@
 import axios from 'https://cdn.jsdelivr.net/npm/axios@1.5.1/+esm'
+// const Razorpay = require('razorpay');
 
 const form = document.getElementById('expenseForm');
 
@@ -9,18 +10,31 @@ const category = document.getElementById('category');
 
 const premium = document.getElementById('premium');
 premium.addEventListener('click', ()=>{
-    axios.get('/buyPremium')
+    const token = localStorage.getItem('token');
+    axios.get('/buyPremium',{headers:{"Authorization":token}})
         .then((response)=>{
-            const options = {
-                key_id: response.key_id,
-                amount: response.amount,
-                orderId: response.orderId,
-                handler: function (response) {
-                    alert('Success')
-                  },
+            console.log(response.data)
+            if (!response.data.key_id) {
+                throw new Error("No key_id found in the response");
             }
+            const options = {
+                "key": response.data.key_id,
+                "order_id": response.data.orderId,
+                "amount":response.data.amount,
+                "handler": async function (response) {
+
+                    const transactionStatus= await axios.post('/updateTransaction',{
+                        order_id : response.razorpay_order_id,
+                        payment_id:response.razorpay_payment_id,
+                    },{headers:{"Authorization":token}});
+                    
+                    alert(transactionStatus.data.msg);
+                },
+            }
+
             var razorpay = new Razorpay(options);
             razorpay.open();
+            
             razorpay.on('payment.failed', function (response) {
                 console.log(response);
                 alert('Something went wrong Transaction failed');
@@ -33,7 +47,8 @@ premium.addEventListener('click', ()=>{
 })
 
 function addExpense(userData){
-    axios.post('/addExpense',userData)
+    const token = localStorage.getItem('token');
+    axios.post('/addExpense',userData,{headers:{"Authorization":token}})
         .then((response)=>{
             console.log("Expense added!",response);
             addUser(response.data.expense);
@@ -44,7 +59,8 @@ function addExpense(userData){
 }
 
 function deleteExpense(id){
-    axios.get('/deleteExpense'+`/${id}`)
+    const token = localStorage.getItem('token');
+    axios.get('/deleteExpense'+`/${id}`,{headers:{"Authorization":token}})
        .then((response)=>{ 
            console.log(response.data.book )         
    })
