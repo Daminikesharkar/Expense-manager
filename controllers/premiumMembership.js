@@ -43,21 +43,20 @@ exports.updateTransaction = async(req,res) =>{
     try {
         const { order_id, payment_id } = req.body;
  
-        Order.findOne({where:{orderId:order_id}}).then((order)=>{
-            order.update({paymentId:payment_id,status:"SUCCESSFUL"}).then(()=>{
-                req.user.update({ispremiumuser:true}).then(()=>{
-                    return res.status(200).json({ success: true, msg: "Transaction Successful" });
-                }).catch((err)=>{
-                    console.log(err);
-                })
-            }).catch((err)=>{
-                console.log(err)
-            })
+        const order = await Order.findOne({where:{orderId:order_id}})
+        const promise1 = order.update({paymentId:payment_id,status:"SUCCESSFUL"})
+        const promise2 = req.user.update({ispremiumuser:true})
+
+        Promise.all([
+            promise1,
+            promise2
+        ]).then(()=>{
+            return res.status(200).json({ success: true, msg: "Transaction Successful" });
         }).catch((err)=>{
-            console.log(err)
-        })        
+            console.log(err);
+        })       
+                
     } catch (error) {
         console.log(error)
     }
-
 }
