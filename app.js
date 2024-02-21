@@ -22,7 +22,7 @@ Expense.belongsTo(User,{constraints:true, onDelete:'CASCADE'});
 User.hasMany(Order);
 Order.belongsTo(User,{constraints:true, onDelete:'CASCADE'})
 
-sequelize.sync({alter:true});
+sequelize.sync();
 
 app.use(mainRoutes);
 app.use(premiumRoutes);

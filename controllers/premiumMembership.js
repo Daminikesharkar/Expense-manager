@@ -1,5 +1,6 @@
 const Razorpay = require('razorpay');
 const Order = require('../models/order');
+const jwt = require('jsonwebtoken')
 const key_id = "rzp_test_hZ745IA6GAHJWc";
 const key_secret = "6183w3iLaSB1wFJftiQTRkww";
 
@@ -51,7 +52,8 @@ exports.updateTransaction = async(req,res) =>{
             promise1,
             promise2
         ]).then(()=>{
-            return res.status(200).json({ success: true, msg: "Transaction Successful" });
+            return res.status(200).json({ success: true, msg: "Transaction Successful" ,
+                                        token:jwt.sign({ userId: req.user.id, ispremiumuser: true }, 'secretKey', { expiresIn: '1h' })});
         }).catch((err)=>{
             console.log(err);
         })       

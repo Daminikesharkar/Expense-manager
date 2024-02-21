@@ -32,7 +32,7 @@ exports.addExpense = (req, res) => {
         amount: amount,
         description: description,
         category: category,
-        // userId: req.user.id
+        userId: req.user.id
 
     })
     .then((createdExpense)=>{
