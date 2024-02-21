@@ -143,6 +143,34 @@ function parseJwt (token) {
     return JSON.parse(jsonPayload);
 }
 
+function showLeaderboardData(){
+    console.log("Inside")
+    const token = localStorage.getItem('token');
+    axios.get('/showLeaderboard',{headers:{"Authorization":token}})
+        .then((response)=>{
+            const leaderboard = document.getElementById('Learboard-content')
+            leaderboard.innerHTML += '<h1>Leader board</h1>';
+            console.log(response.data.userData)
+            response.data.userData.forEach(userDetails => {
+                console.log(userDetails)
+                leaderboard.innerHTML += `<li> Name - ${userDetails.username} Total Expense - ${userDetails.total_expenses} </li>`;
+            });
+        })
+        .catch((error)=>{
+            console.log(error);
+        })
+}
+
+function addLeaderboardDiv(){
+    document.getElementById("show-leaderboard-div").style.visibility = "visible";
+    
+    const leaderboardBtn = document.getElementById('show-leaderboard-btn');
+    leaderboardBtn.addEventListener('click',(e)=>{
+        console.log("clicked")
+        showLeaderboardData();
+    })
+}
+
 window.addEventListener('load',()=>{
     displayExpenses();
 
@@ -151,5 +179,6 @@ window.addEventListener('load',()=>{
     if(decoded.ispremiumuser){
         document.getElementById("premium").style.visibility = "hidden";
         document.getElementById("message").innerHTML="You are a premium user";
+        addLeaderboardDiv();
     }
 })
