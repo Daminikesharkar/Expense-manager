@@ -67,7 +67,55 @@ body {
     margin: 0px;
     margin-bottom: 20px;
 }
-
+/* Popup container - hidden by default */
+.form-popup {
+    display: none;
+    position: fixed;
+    top: 50%; /* Center vertically */
+    left: 50%; /* Center horizontally */
+    transform: translate(-50%, -50%); /* Adjust position to the exact center */
+    border: 3px solid #f1f1f1;
+    z-index: 9;
+    border-radius: 5px; /* Optional: for rounded corners */
+  }
+  
+  /* Add styles to the form container */
+  .form-container {
+    max-width: 300px;
+    padding: 20px;
+    background-color: white;
+  }
+  
+  /* Full-width input fields */
+  .form-container input[type=text] {
+    width: 100%;
+    padding: 15px;
+    margin: 5px 0 15px 0;
+    border: none;
+    background: #f1f1f1;
+  }
+  
+  /* Set a style for the submit button */
+  .form-container .btn {
+    background-color: #4CAF50;
+    color: white;
+    padding: 16px 20px;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    margin-bottom:10px;
+  }
+  
+  /* Add a red background color to the cancel button */
+  .form-container .cancel {
+    background-color: red;
+  }
+  
+  /* Add some hover effects to buttons */
+  .form-container .btn:hover, .open-button:hover {
+    opacity: 1;
+  }
+  
 
 /* footer */
 

@@ -3,7 +3,8 @@ const path = require('path');
 const cors = require('cors');
 
 const mainRoutes = require('./routes/main');
-const premiumRoutes = require('./routes/premium')
+const premiumRoutes = require('./routes/premium');
+const resetPasswordRoutes = require('./routes/password');
 const sequelize = require('./util/database');
 
 const User = require('./models/user');
@@ -26,6 +27,7 @@ sequelize.sync();
 
 app.use(mainRoutes);
 app.use(premiumRoutes);
+app.use(resetPasswordRoutes);
 
 app.use(cors());
 

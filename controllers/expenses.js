@@ -1,5 +1,7 @@
 const Expense = require('../models/expense');
 const path = require('path');
+const Users = require('../models/user');
+const sequelize = require('../util/database');
 
 const expensePagePath = path.join(__dirname, '../views/addExpense.html');
 
@@ -20,7 +22,9 @@ exports.getExpense = (req,res)=>{
     })
 }
 
-exports.addExpense = (req, res) => {
+exports.addExpense = async(req, res) => {
+
+    const transaction = await sequelize.transaction();
 
     const amount = req.body.amount;
     const description = req.body.description;
@@ -34,17 +38,33 @@ exports.addExpense = (req, res) => {
         category: category,
         userId: req.user.id
 
-    })
+    },{transaction})
     .then((createdExpense)=>{
         if (createdExpense) {
+            const total_expenses = Number(req.user.totalExpense) + Number(amount);
+
+            Users.update({totalExpense:total_expenses},{where:{id:req.user.id}},{transaction})
+            .then(async()=>{
+                await transaction.commit();
+            })
+            .catch(async (err)=>{
+                if (transaction) {
+                    await transaction.rollback();
+                }
+                console.log(err);
+            })
+            
             return res.status(201).json({
                 message: 'Expense added successfully',
                 expense: createdExpense
             });
         }
     })
-    .catch(()=>{
+    .catch(async()=>{
         console.log(err);
+        if (transaction) {
+            await transaction.rollback();
+        }
         res.status(500).json({
             error: 'Internal Server Error'
         });
