@@ -44,7 +44,7 @@ function resetPassword(userData){
 
 forgetPassword.addEventListener("click",(e)=>{
     openForm();
-    const userEmail = document.getElementById('resetemail').value;
+    const userEmail = document.getElementById('resetemail');
     const submitLinkForm = document.getElementById('passwordResetForm');
 
     submitLinkForm.addEventListener("submit",(e)=>{
@@ -53,6 +53,7 @@ forgetPassword.addEventListener("click",(e)=>{
         const userData ={
             userEmail: userEmail.value,
         }
+        console.log("email",userData);
         resetPassword(userData);
         closeForm();
     })
