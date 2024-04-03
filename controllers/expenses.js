@@ -38,62 +38,58 @@ exports.getExpense = async (req,res)=>{
     }
 }
 
-exports.addExpense = async(req, res) => {
-
+exports.addExpense = async (req, res) => {
     const transaction = await sequelize.transaction();
 
-    const amount = req.body.amount;
-    const description = req.body.description;
-    const category = req.body.category;
+    try {
+        const { amount, description, category } = req.body;
 
-    console.log("In",amount)
+        const createdExpense = await Expense.create({
+            amount: amount,
+            description: description,
+            category: category,
+            userId: req.user.id
+        }, { transaction });
 
-    Expense.create({
-        amount: amount,
-        description: description,
-        category: category,
-        userId: req.user.id
-
-    },{transaction})
-    .then((createdExpense)=>{
         if (createdExpense) {
             const total_expenses = Number(req.user.totalExpense) + Number(amount);
 
-            Users.update({totalExpense:total_expenses},{where:{id:req.user.id}, transaction })
-            .then(async()=>{
-                await transaction.commit();
-            })
-            .catch(async (err)=>{
-                if (transaction) {
-                    await transaction.rollback();
-                }
-                console.log(err);
-            })
-            
-            return res.status(201).json({
+            await Users.update({ totalExpense: total_expenses }, { where: { id: req.user.id }, transaction });
+
+            await transaction.commit();
+
+            return res.status(200).json({
                 message: 'Expense added successfully',
                 expense: createdExpense
             });
         }
-    })
-    .catch(async()=>{
-        console.log(err);
+    } catch (error) {
         if (transaction) {
             await transaction.rollback();
         }
-        res.status(500).json({
+
+        return res.status(500).json({
             error: 'Internal Server Error'
         });
-    })    
-}
+    }
+};
 
-exports.deleteExpense = (req,res)=>{
-    console.log("Deleting...",req.params.id)
-    Expense.findByPk(req.params.id)
-    .then((expense)=>{
-        return expense.destroy();
-    })
-    .catch((err)=>{
-        console.log(err);
-    })
-}
+exports.deleteExpense = async (req, res) => {
+    const transaction = await sequelize.transaction();
+
+    try {
+        const id = req.params.id;
+        const expense = await Expense.findByPk(id);
+
+        const newTotalExpense = Number(req.user.totalExpense) - Number(expense.amount);
+        await Users.update({ totalExpense: newTotalExpense }, { where: { id: req.user.id }, transaction });
+
+        await expense.destroy({ transaction });
+        await transaction.commit();
+
+        return res.json({ message: 'Expense deleted successfully', totalExpense: newTotalExpense });
+    } catch (error) {
+        await transaction.rollback();
+        res.status(500).json({ error: 'Error deleting expense' });
+    }
+};

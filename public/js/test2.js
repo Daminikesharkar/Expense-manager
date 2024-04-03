@@ -21,16 +21,14 @@ expenseform.addEventListener("submit",(event)=>{
     expenseform.reset();
 })
 
-function addExpense(userData){
-    const token = localStorage.getItem('token');
-    axios.post('/addExpense',userData,{headers:{"Authorization":token}})
-        .then((response)=>{
-            console.log("Expense added!",response);
-            addUser(response.data.expense);
-
-        }).catch((error)=>{
-            console.log(error);
-        })
+async function addExpense(userData) {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await axios.post('/addExpense', userData, { headers: { "Authorization": token } });
+        addUser(response.data.expense);
+    } catch (error) {
+        console.error("Error adding product", error.message);
+    }
 }
 
 function addUser(userData){
@@ -56,24 +54,24 @@ const table = document.getElementById('expense_table');
 table.addEventListener('click',(e)=>{
     e.preventDefault();
     if(e.target.classList.contains('delete')){
-
         const row = e.target.parentElement.parentElement;
 
         const userDataString = e.target.getAttribute("data-user-data");
         const userData = JSON.parse(userDataString);
-        
-        console.log("User data:", userData);
         deleteExpense(userData.id,row);
         row.remove(); 
     }
 })
 
-function deleteExpense(id){
-    const token = localStorage.getItem('token');
-    axios.get('/deleteExpense'+`/${id}`,{headers:{"Authorization":token}})
-       .then((response)=>{ 
-           console.log(response.data)                  
-   })
+async function deleteExpense(id) {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get(`/deleteExpense/${id}`, { headers: { "Authorization": token } });
+        console.log(response.data);
+        alert(response.data.message);
+    } catch (error) {
+        console.error("Error deleting product", error.message);
+    }
 }
 
 //pagination
