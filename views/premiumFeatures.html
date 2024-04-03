@@ -198,7 +198,13 @@
         .centered-container button:hover {
             background-color: #13343a; 
         }
-
+        #Premium-user-text {
+            border: 2px dotted rgb(181, 188, 235); 
+            padding: 10px;
+            display: inline-block; 
+            color: #9db2d5; 
+            text-shadow: 0 0 5px #ffcc00; 
+        }
 
     </style>
   </head>
@@ -217,21 +223,22 @@
             <li><a id="dashboard-link" href="/userExpenses">Dashboard</a></li>
             <li><a id="premium-features-link" href="">Premium-features</a></li>
           </ul>
+          <span id="Premium-user-text" style="display: none;">Premium User</span>
           <div class="buttons">
-              <img src="images/user.png" alt="User" class="user-icon"> <!-- User Icon -->
+              <img src="images/user.png" alt="User" class="user-icon"> 
               <span class="username">Damini K</span>
               <i class="uil uil-sign-out-alt logout-icon" title="Logout"></i>
           </div>
         </nav>
       </header>
 
-    <section class="hero-section" id="premium">
+    <section class="hero-section" id="premium" style="display: none;">
         <div class="buy-container">
             <h2 class="title">Unlock Premium <br> Content</h2>
             <h3 class="price">Rs.1000<span>/year</span></h3>
             <p class="description">Gain exclusive access to our premium content. Explore and see Leaderboard and download your reports for better decisions.</p>
             <b class="offer">Act fast! Offer ends soon</b>
-            <a class="subscribe-button" href="#">Buy Premium Now</a>
+            <a id="premium-button" class="subscribe-button" href="#">Buy Premium Now</a>
         </div>
     </section>
 
@@ -241,7 +248,7 @@
                 <button class="btn download-reports">Download Reports</button>
         </div>        
         <div id="leaderboard-div" class="leaderboard-container" style="display: none;">
-                <table id="leaderboard">
+                <table id="leaderboard" class="leaderboard">
                         <thead>
                             <tr>
                                 <th>Id</th>
@@ -276,5 +283,6 @@
     </div>    
 
    <script type="module" src="js/premiumFeatures.js"></script>
+   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   </body>  
 </html>

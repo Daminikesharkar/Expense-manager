@@ -10,6 +10,7 @@ const sequelize = require('./util/database');
 const User = require('./models/user');
 const Expense = require('./models/expense');
 const Order = require('./models/order');
+const Downloads = require('./models/download');
 
 const app = express();
 
@@ -23,6 +24,10 @@ Expense.belongsTo(User,{constraints:true, onDelete:'CASCADE'});
 User.hasMany(Order);
 Order.belongsTo(User,{constraints:true, onDelete:'CASCADE'})
 
+User.hasMany(Downloads);
+Downloads.belongsTo(User,{constraints:true, onDelete:'CASCADE'})
+
+// sequelize.sync({ alter: true })
 sequelize.sync();
 
 app.use(mainRoutes);

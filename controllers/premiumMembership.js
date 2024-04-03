@@ -1,8 +1,10 @@
 const Razorpay = require('razorpay');
+require('dotenv').config();
+
 const Order = require('../models/order');
 const jwt = require('jsonwebtoken')
-const key_id = "rzp_test_hZ745IA6GAHJWc";
-const key_secret = "6183w3iLaSB1wFJftiQTRkww";
+const key_id = process.env.RAZORPAY_KEY_ID;
+const key_secret = process.env.RAZORPAY_KEY_SECRET;
 const path = require('path');
 
 const premiumFilePath = path.join(__dirname, '../views/premiumFeatures.html');
@@ -12,7 +14,6 @@ exports.getPremiumPage= (req, res) => {
 };
 
 exports.purchasePremiumMembership = async(req,res)=>{
-    console.log("Inside")
 
     try {
         var rzp = new Razorpay({
