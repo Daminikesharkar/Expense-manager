@@ -6,6 +6,7 @@ const premiumMembershipFeatures = require('../controllers/premiumFeatures');
 const router = express.Router();
 
 //premium membership purchase routes
+router.get('/premium',premiumMembershipPurchace.getPremiumPage);
 router.get('/buyPremium',authentication.authenticate,premiumMembershipPurchace.purchasePremiumMembership);
 router.post('/updateTransaction',authentication.authenticate,premiumMembershipPurchace.updateTransaction);
 

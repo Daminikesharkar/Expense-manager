@@ -3,7 +3,8 @@ const path = require('path');
 const Users = require('../models/user');
 const sequelize = require('../util/database');
 
-const expensePagePath = path.join(__dirname, '../views/addExpense.html');
+// const expensePagePath = path.join(__dirname, '../views/addExpense.html');
+const expensePagePath = path.join(__dirname, '../views/test2.html');
 
 exports.showExpensePage = (req,res)=>{
     res.sendFile(expensePagePath);
@@ -43,7 +44,7 @@ exports.addExpense = async(req, res) => {
         if (createdExpense) {
             const total_expenses = Number(req.user.totalExpense) + Number(amount);
 
-            Users.update({totalExpense:total_expenses},{where:{id:req.user.id}},{transaction})
+            Users.update({totalExpense:total_expenses},{where:{id:req.user.id}, transaction })
             .then(async()=>{
                 await transaction.commit();
             })

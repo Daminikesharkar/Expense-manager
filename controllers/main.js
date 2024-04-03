@@ -1,7 +1,9 @@
 const path = require('path');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
-const indexFilePath = path.join(__dirname, '../views/index.html');
+// const indexFilePath = path.join(__dirname, '../views/index.html');
+
+const indexFilePath = path.join(__dirname, '../views/test.html');
 
 const Users = require('../models/user');
 

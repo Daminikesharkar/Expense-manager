@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Expense tracker</title>
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+    <link rel="stylesheet" href="css/test.css" />
+    <style>
+        body{
+            background: #eef0f1;            
+        }
+        .header {
+            background: linear-gradient(to bottom, #175d69 23%, #170c43 95%);                                
+        }
+        .navbar .buttons {
+            display: flex;
+            align-items: center;
+        }
+        .buttons .user-icon {
+            width: 40px; 
+            height: 40px; 
+            border-radius: 50%; 
+            object-fit: cover; 
+            margin-right: 10px; 
+        }
+        .buttons .username {
+            color: #fff; 
+            font-size: 16px; 
+            margin-right: 20px;
+        }
+        .buttons .logout-icon {
+            color: #fff; 
+            font-size: 24px; 
+            cursor: pointer;
+        }
+
+        /* buy premium */
+        #premium{
+            display: flex;
+            flex-direction: column;
+            margin-top: 100px;
+            height: 90vh;
+        }
+        .container{
+            width: 85%;
+            background: #fff;
+            border-radius: 6px;
+            padding: 20px 60px 30px 40px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+            margin-bottom: 40px;
+        }
+        .premium-features-container{
+            margin-top: 50px;
+        }
+        .buy-container {
+            width: 460px;
+            padding: 40px;
+            background: #ffffff;
+            text-align: center;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.05);
+            /* position: relative; */
+        }
+        .buy-container .title {
+            font-size: 2rem;
+            color: #175d69;
+        }
+        .buy-container .price {
+            color: #13343a;
+            font-weight: 700;
+            font-size: 2.2rem;
+            margin: 15px 0;
+        }
+        .buy-container span {
+            font-size: 1.2rem;
+        }
+        .buy-container .description {
+            color: #175d69;
+            font-size: 1.1rem;
+            margin: 20px 0 20px;
+        }
+        .buy-container .offer {
+            display: block;
+            color:#175d69;
+            font-size: 1rem;
+            margin-top: 25px;
+        }
+        .subscribe-button {
+            display: inline-block;
+            padding: 15px 0;
+            background-color: #175d69;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            margin-top: 40px;
+            width: 100%;
+            font-weight: 500;
+            transition: 0.2s ease;
+        }
+        .subscribe-button:hover {
+            background: #175d69;
+        }
+
+        .premium-features {
+            background: #fff;
+            padding: 40px 60px 30px 40px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+            height: 90vh;
+        }
+        .premium-features-container{
+            padding: 30px;
+        }
+        .button-group {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            margin-bottom: 30px;
+        }
+        .button-group .btn {
+            outline: none;
+            padding: 1rem 2rem;
+            background: transparent;
+            color: #175d69; 
+            border: 1px solid #175d69; 
+            border-radius: 3px;
+            cursor: pointer;
+            font-weight: 500;
+            margin-left: 20px;
+        }
+        .button-group .btn:hover {
+            background-color: #13343a; 
+            color: #fff; 
+        }
+
+        .button-group .btn.is-checked {
+            background-color: #13343a; 
+            color: #fff; 
+        }
+        .leaderboard-container{
+            width: 100%;
+            background: #fff;
+            border-radius: 6px;
+            padding: 20px;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+            overflow-x: auto; 
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+            color: #175d69;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .download-container{
+            width: 100%;
+            padding: 50px;
+            overflow-x: auto; 
+        }
+        .centered-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .centered-container button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 20px; 
+            background-color: #175d69; 
+            color: #fff; 
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .centered-container button svg {
+            fill: #fff; 
+            width: 20px; 
+            height: 20px;
+            margin-left: 5px; 
+        }
+
+        .centered-container button:hover {
+            background-color: #13343a; 
+        }
+
+
+    </style>
+  </head>
+  <body>
+
+    <header class="header">
+        <nav class="navbar">
+          <h2 class="logo"><a href="#">ExpenseTracker</a></h2>
+          <input type="checkbox" id="menu-toggle" />
+          <label for="menu-toggle" id="hamburger-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+              <path d="M3 12h18M3 6h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </label>
+          <ul class="links">
+            <li><a id="dashboard-link" href="/userExpenses">Dashboard</a></li>
+            <li><a id="premium-features-link" href="">Premium-features</a></li>
+          </ul>
+          <div class="buttons">
+              <img src="images/user.png" alt="User" class="user-icon"> <!-- User Icon -->
+              <span class="username">Damini K</span>
+              <i class="uil uil-sign-out-alt logout-icon" title="Logout"></i>
+          </div>
+        </nav>
+      </header>
+
+    <section class="hero-section" id="premium">
+        <div class="buy-container">
+            <h2 class="title">Unlock Premium <br> Content</h2>
+            <h3 class="price">Rs.1000<span>/year</span></h3>
+            <p class="description">Gain exclusive access to our premium content. Explore and see Leaderboard and download your reports for better decisions.</p>
+            <b class="offer">Act fast! Offer ends soon</b>
+            <a class="subscribe-button" href="#">Buy Premium Now</a>
+        </div>
+    </section>
+
+    <div class="premium-features-container" style="display: none;">
+        <div id="filters" class="button-group">
+                <button class="btn show-leaderboard">Show Leaderboard</button>
+                <button class="btn download-reports">Download Reports</button>
+        </div>        
+        <div id="leaderboard-div" class="leaderboard-container" style="display: none;">
+                <table id="leaderboard">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>User</th>
+                                <th>Toal-amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>Damini</td>
+                                <td>5000</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Archana</td>
+                                <td>4000</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>Sanjay</td>
+                                <td>3000</td>
+                            </tr>
+                        </tbody>
+                </table>
+        </div>    
+        <div id="download-div" class="download-container"  style="display: none;">
+            <div class="centered-container">
+                <button id="download-button">Download Whole Data</button>
+            </div>
+        </div>
+    </div>    
+
+   <script type="module" src="js/premiumFeatures.js"></script>
+  </body>  
+</html>

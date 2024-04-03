@@ -3,6 +3,13 @@ const Order = require('../models/order');
 const jwt = require('jsonwebtoken')
 const key_id = "rzp_test_hZ745IA6GAHJWc";
 const key_secret = "6183w3iLaSB1wFJftiQTRkww";
+const path = require('path');
+
+const premiumFilePath = path.join(__dirname, '../views/premiumFeatures.html');
+
+exports.getPremiumPage= (req, res) => {
+    res.sendFile(premiumFilePath);
+};
 
 exports.purchasePremiumMembership = async(req,res)=>{
     console.log("Inside")
