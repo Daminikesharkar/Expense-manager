@@ -8,6 +8,9 @@ const premiumText = document.getElementById('Premium-user-text');
 
 const heroSection = document.querySelector('.hero-section');
 const premiumFeaturesContainer = document.querySelector('.premium-features-container');
+const downloadReports = document.getElementById('download-button');
+const downloadReportsHistory = document.getElementById('download-history-button');
+const historytableContainer = document.getElementById('history-url');
 
 showLeaderboardButton.addEventListener("click", function() {
     leaderboardTable.style.display = "table";
@@ -18,7 +21,7 @@ showLeaderboardButton.addEventListener("click", function() {
 downloadReportsButton.addEventListener("click", function() {
     leaderboardTable.style.display = "none";
     downloadButton.style.display = "block";
-    downloadExpenses();
+    historytableContainer.style.display = 'none';
 });
 
 const premium = document.getElementById('premium-button');
@@ -90,6 +93,61 @@ function showLeaderboardData(){
         .catch((error)=>{
             console.log(error);
         })
+}
+
+downloadReports.addEventListener('click',async (e)=>{
+    e.preventDefault();
+    try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get(`/downloadFile`,{headers:{"Authorization":token}})
+
+        if(response.status === 200){
+            var a = document.createElement("a");
+            a.href = response.data.fileurl;
+            a.download = 'myexpense.csv';
+            a.click();
+        } else {
+            throw new Error(response.data.message)
+        }
+        
+    } catch (error) {
+        console.error("Error downloading file", error.message);
+    }
+
+});
+downloadReportsHistory.addEventListener('click',async (e)=>{
+    try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get('/downloadHistory',{headers:{"Authorization":token}});
+        console.log('click')
+        addUrlsToUI(response.data.history);
+        
+    } catch (error) {
+        console.error("Error showing history", error.message);
+    }
+});
+
+function addUrlsToUI(urls){
+
+    historytableContainer.style.display = 'block';
+
+    const tableBody = document.querySelector('.history-url-table tbody');
+   
+    tableBody.innerHTML = '';
+
+    const length = Object.keys(urls).length;
+
+    for(let i=0;i<length;i++){
+        const url = urls[i];
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${i+1}</td>
+            <td><a href="${url.downloadUrl}">myDownload-${url.createdAt}</a></td>
+        `;
+    
+        tableBody.appendChild(row);        
+    }
 }
 
 function parseJwt (token) {

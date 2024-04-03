@@ -173,6 +173,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            margin-bottom: 50px;
         }
 
         .centered-container button {
@@ -186,6 +187,7 @@
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s ease;
+            margin-left: 20px;
         }
 
         .centered-container button svg {
@@ -205,6 +207,45 @@
             color: #9db2d5; 
             text-shadow: 0 0 5px #ffcc00; 
         }
+
+        #history-url {
+            display: none;
+        }
+
+        .history-url-table {
+            margin: 20px auto; 
+            text-align: center;
+        }
+
+        .history-url-table h3 {
+            font-size: 1.2rem;
+            color: #465558;
+            opacity: 0.5;
+        }
+
+        .history-url-table table {
+            border-collapse: collapse;
+            border: 1px solid #ddd;
+            width: 40%; 
+            margin: 20px auto; 
+        }
+
+        .history-url-table th,
+        .history-url-table td {
+            padding: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .history-url-table th {
+            background-color: #f2f2f2;
+            color: #175d69;
+        }
+
+        .history-url-table tbody tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+
 
     </style>
   </head>
@@ -278,8 +319,35 @@
         <div id="download-div" class="download-container"  style="display: none;">
             <div class="centered-container">
                 <button id="download-button">Download Whole Data</button>
+                <button id="download-history-button">Show Downloaded History</button>
+            </div>
+            <div id="history-url" class="history-url-table" style="display: none;">
+                <h3>--- Expense Downloaded history ---</h3>
+                <table cellpadding="0" cellspacing="0" border="0" >
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>URL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- <tr>
+                          <td>ID</td>
+                          <td>URL</td>                           
+                        </tr>
+                        <tr>
+                          <td>1</td>
+                          <td>url</td>                                                     
+                        </tr>
+                        <tr>
+                          <td>2</td>
+                          <td>url</td>                                                      
+                        </tr> -->
+                    </tbody>
+                  </table>
             </div>
         </div>
+        
     </div>    
 
    <script type="module" src="js/premiumFeatures.js"></script>

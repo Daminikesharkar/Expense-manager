@@ -1,22 +1,5 @@
 import axios from 'https://cdn.jsdelivr.net/npm/axios@1.5.1/+esm'
 
-
-const showLeaderboardButton = document.querySelector(".show-leaderboard");
-const downloadReportsButton = document.querySelector(".download-reports");
-const leaderboardTable = document.getElementById("leaderboard-div");
-const downloadButton = document.getElementById("download-div");
-
-showLeaderboardButton.addEventListener("click", function() {
-    leaderboardTable.style.display = "table";
-    downloadButton.style.display = "none";
-});
-
-downloadReportsButton.addEventListener("click", function() {
-    leaderboardTable.style.display = "none";
-    downloadButton.style.display = "block";
-});
-
-
 //add expense logic
 const expenseform = document.getElementById('add-expense-form');
 

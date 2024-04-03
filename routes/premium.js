@@ -12,5 +12,7 @@ router.post('/updateTransaction',authentication.authenticate,premiumMembershipPu
 
 //premium membership features routes
 router.get('/showLeaderboard',authentication.authenticate,premiumMembershipFeatures.showLeaderboard);
+router.get('/downloadFile',authentication.authenticate,premiumMembershipFeatures.downloadFile);
+router.get('/downloadHistory',authentication.authenticate,premiumMembershipFeatures.downloadedHistory);
 
 module.exports = router;
