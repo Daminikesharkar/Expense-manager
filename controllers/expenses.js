@@ -10,17 +10,32 @@ exports.showExpensePage = (req,res)=>{
     res.sendFile(expensePagePath);
 }
 
-exports.getExpense = (req,res)=>{
-    const currentUserId = req.user.id;
-    Expense.findAll({where: {
-        userId: currentUserId,
-      }})
-    .then((expenses)=>{
-        res.json({expense: expenses});
-    })  
-    .catch((err)=>{
-        console.log(err);
-    })
+exports.getExpense = async (req,res)=>{
+    const page = +req.query.page || 1;
+    const ITEMS_PER_PAGE = 2;
+
+    try {
+        const totalItems = await Expense.count({ where: { userId: req.user.id } });
+        
+        const expenses = await Expense.findAll({
+            where: { userId: req.user.id },
+            offset: (page - 1) * ITEMS_PER_PAGE,
+            limit: ITEMS_PER_PAGE
+        });
+        
+        return res.status(200).json({
+            expenses: expenses,
+            currentPage: page,
+            hasNextPage: ITEMS_PER_PAGE * page < totalItems,
+            nextPage: page + 1,
+            hasPreviousPage: page > 1,
+            previousPage: page - 1,
+            lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE)
+        });
+    } catch (error) {
+        console.error("Error getting all products:", error);
+        res.status(500).json({ error: 'Error getting all products' });
+    }
 }
 
 exports.addExpense = async(req, res) => {

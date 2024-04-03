@@ -76,18 +76,110 @@ function deleteExpense(id){
    })
 }
 
-function displayExpenses(){
-    const token = localStorage.getItem('token');
-    axios.get('/getExpenses',{headers:{"Authorization":token}})
-        .then((response)=>{
-            const length = Object.keys(response.data.expense).length;
-            for(let i=0;i<length;i++){
-                const data = response.data.expense[i];
-                addUser(data);
-            }
+//pagination
+const ExpensesPerPageSelect = document.getElementById('ExpensesPerPage');
+const savePreferenceBtn = document.getElementById('savePreferenceBtn');
+
+function getExpensesPerPage() {
+    return localStorage.getItem('productsPerPage') || 10; 
+}
+
+function setExpensesPerPage(value) {
+    localStorage.setItem('productsPerPage', value);
+}
+
+savePreferenceBtn.addEventListener('click', (event)=> {
+    event.preventDefault();
+    const value = ExpensesPerPageSelect.value;
+    console.log(value);
+    setExpensesPerPage(value);
+    location.reload();
+});
+
+function displayExpensesPerPagePreference() {
+    ExpensesPerPageSelect.value = getExpensesPerPage();
+}
+
+displayExpensesPerPagePreference();
+
+const pagination = document.getElementById('pagination');
+
+async function getExpenses(page){
+    try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get(`/getExpenses/?page=${page}`,{headers:{"Authorization":token}});
+
+        displayExpenses(response.data.expenses);
+        showPagination(response.data);
+        
+    } catch (error) {
+        console.error("Error getting all expenses", error.message);
+    }
+}
+
+function showPagination({
+    currentPage,
+    hasNextPage,
+    nextPage,
+    hasPreviousPage,
+    previousPage,
+    lastPage,
+}){
+    pagination.innerHTML='';
+
+    if(hasPreviousPage){
+        const btn2 = document.createElement('button');
+        btn2.innerHTML = previousPage;
+        btn2.addEventListener('click',()=>{
+            getExpenses(previousPage);
+        })
+        pagination.appendChild(btn2);
+    }
+
+    const btn1 = document.createElement('button');
+    btn1.innerHTML = `<h3>${currentPage}</h3>`;
+    btn1.addEventListener('click',()=>{
+        getExpenses(currentPage);
     })
+    pagination.appendChild(btn1);
+
+    if(hasNextPage){
+        const btn3 = document.createElement('button');
+        btn3.innerHTML = nextPage;
+        btn3.addEventListener('click',()=>{
+            getExpenses(nextPage);
+        })
+        pagination.appendChild(btn3);
+    }
+}
+
+function displayExpenses(expenses){
+    const tbody = document.querySelector(".tablecontainer table tbody");
+    tbody.innerHTML = '';
+
+    const length = Object.keys(expenses).length;
+    for(let i=0;i<length;i++){
+        const data = expenses[i];
+        addUser(data);
+    }
+}
+
+async function displayAllExpenses(){
+    const page = 1;
+    const itemsPerPage = getExpensesPerPage();
+
+    try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get(`/getExpenses/?page=${page}&itemsPerPage=${itemsPerPage}`,{headers:{"Authorization":token}});
+
+        displayExpenses(response.data.expenses);
+        showPagination(response.data);
+        
+    } catch (error) {
+        console.error("Error getting all expenses", error.message);
+    }
 }
 
 window.addEventListener('load',()=>{
-    displayExpenses();
+    displayAllExpenses();
 })
