@@ -11,6 +11,7 @@ const User = require('./models/user');
 const Expense = require('./models/expense');
 const Order = require('./models/order');
 const Downloads = require('./models/download');
+const forgetpassword = require('./models/password');
 
 const app = express();
 
@@ -26,6 +27,9 @@ Order.belongsTo(User,{constraints:true, onDelete:'CASCADE'})
 
 User.hasMany(Downloads);
 Downloads.belongsTo(User,{constraints:true, onDelete:'CASCADE'})
+
+User.hasMany(forgetpassword);
+forgetpassword.belongsTo(User,{constraints:true, onDelete:'CASCADE'})
 
 // sequelize.sync({ alter: true })
 sequelize.sync();

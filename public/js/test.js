@@ -96,3 +96,11 @@ loginForm.addEventListener("submit",(event)=>{
     loginUser(userData);
     loginForm.reset();
 })
+
+//forget password logic 
+const forgetPasswordLink = document.getElementById('forget-password');
+
+forgetPasswordLink.addEventListener('click',async (e)=>{
+    e.preventDefault();
+    window.location.href = `/forgetPasswordpage`;
+})
