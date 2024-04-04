@@ -178,6 +178,20 @@ async function displayAllExpenses(){
     }
 }
 
+const logout = document.getElementById('logout');
+
+logout.addEventListener('click',async (e)=>{
+    e.preventDefault();
+    try {
+        localStorage.removeItem('token');
+        alert('User logged out successfully');
+        window.location.href = `/`;
+        
+    } catch (error) {
+        console.error("Error logging out", error.message);
+    }
+})
+
 window.addEventListener('load',()=>{
     displayAllExpenses();
 })

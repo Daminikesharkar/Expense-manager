@@ -40,30 +40,29 @@ GROUP BY users.id ORDER BY total_expenses desc; */
 //         console.error(error);
 //       });
 // }
+exports.showLeaderboard = async (req, res) => {
+    try {
+        const users = await Users.findAll({
+            attributes: [
+                'id',
+                'username',
+                'totalExpense'
+            ],
+            order: [['totalExpense', 'DESC']]
+        });
 
-exports.showLeaderboard = (req,res)=>{
-  Users.findAll({
-      attributes: [
-        'id',
-        'username',
-        'totalExpense'
-      ],
-      order: [['totalExpense', 'DESC']]
-    })
-
-    .then(users => {
-      const userData = users.map(user => ({
-          id: user.id,
-          username: user.username,
-          total_expenses: user.get('totalExpense')
+        const userData = users.map(user => ({
+            id: user.id,
+            username: user.username,
+            total_expenses: user.get('totalExpense')
         }));
-        console.log(userData);
-        return res.json({userData: userData});
-    })
-    .catch(error => {
-      console.error(error);
-    });
-}
+
+        return res.json({ userData: userData });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
 
 function uploadtoS3(data,filename){
   const bucketName = process.env.BUCKET_NAME;

@@ -12,87 +12,83 @@ const downloadReports = document.getElementById('download-button');
 const downloadReportsHistory = document.getElementById('download-history-button');
 const historytableContainer = document.getElementById('history-url');
 
-showLeaderboardButton.addEventListener("click", function() {
+showLeaderboardButton.addEventListener("click", ()=> {
     leaderboardTable.style.display = "table";
     downloadButton.style.display = "none";
     showLeaderboardData();
 });
 
-downloadReportsButton.addEventListener("click", function() {
+downloadReportsButton.addEventListener("click", ()=> {
     leaderboardTable.style.display = "none";
     downloadButton.style.display = "block";
     historytableContainer.style.display = 'none';
 });
 
 const premium = document.getElementById('premium-button');
-premium.addEventListener('click', (e)=>{
+premium.addEventListener('click', async (e) => {
     e.preventDefault();
     const token = localStorage.getItem('token');
 
-    axios.get('/buyPremium',{headers:{"Authorization":token}})
-        .then((response)=>{
-            console.log(response.data)
-            if (!response.data.key_id) {
-                throw new Error("No key_id found in the response");
-            }
-            const options = {
-                "key": response.data.key_id,
-                "order_id": response.data.orderId,
-                "amount":response.data.amount,
-                "handler": async function (response) {
+    try {
+        const response = await axios.get('/buyPremium', {headers: {"Authorization": token}});
 
-                    const transactionStatus= await axios.post('/updateTransaction',{
-                        order_id : response.razorpay_order_id,
-                        payment_id:response.razorpay_payment_id,
-                    },{headers:{"Authorization":token}});
-                    
+        const options = {
+            "key": response.data.key_id,
+            "order_id": response.data.orderId,
+            "amount": response.data.amount,
+            "handler": async function (response) {
+                try {
+                    const transactionStatus = await axios.post('/updateTransaction', {
+                        order_id: response.razorpay_order_id,
+                        payment_id: response.razorpay_payment_id,
+                    }, {headers: {"Authorization": token}});
+
                     alert(transactionStatus.data.msg);
                     heroSection.style.display = 'none';
                     premiumFeaturesContainer.style.display = 'block';
 
-                    localStorage.setItem('token',transactionStatus.data.token);
-                },
-            }
+                    localStorage.setItem('token', transactionStatus.data.token);
+                } catch (error) {
+                    console.error("Error updating transaction", error.message);
+                }
+            },
+        }
 
-            var razorpay = new Razorpay(options);
-            razorpay.open();
-            
-            razorpay.on('payment.failed', function (response) {
-                console.log(response);
-                alert('Something went wrong Transaction failed');
-    
-            });
-        })
-        .catch(error=>{
-            console.log(error);
-        })
-})
+        var razorpay = new Razorpay(options);
+        razorpay.open();
 
-function showLeaderboardData(){
+        razorpay.on('payment.failed', function (response) {
+            console.log(response);
+            alert('Something went wrong. Transaction failed');
+        });
+
+    } catch (error) {
+        console.error("Error buying premium", error.message);
+    }
+});
+
+async function showLeaderboardData() {
     const token = localStorage.getItem('token');
-    axios.get('/showLeaderboard',{headers:{"Authorization":token}})
-        .then((response)=>{
+    try {
+        const response = await axios.get('/showLeaderboard', { headers: { "Authorization": token } });
 
-            const leaderboardTableBody = document.querySelector('#leaderboard tbody');
-            leaderboardTableBody.innerHTML = ''; 
+        const leaderboardTableBody = document.querySelector('#leaderboard tbody');
+        leaderboardTableBody.innerHTML = ''; 
 
-
-            const length = Object.keys(response.data.userData).length;
-            for(let i=0;i<length;i++){
-                const userDetails = response.data.userData[i];
-                const row = `
-                    <tr>
-                        <td>${i+1}</td>
-                        <td>${userDetails.username}</td>
-                        <td>${userDetails.total_expenses}</td>
-                    </tr>`;
-                leaderboardTableBody.innerHTML += row;
-                
-            }            
-        })
-        .catch((error)=>{
-            console.log(error);
-        })
+        const length = Object.keys(response.data.userData).length;
+        for (let i = 0; i < length; i++) {
+            const userDetails = response.data.userData[i];
+            const row = `
+                <tr>
+                    <td>${i + 1}</td>
+                    <td>${userDetails.username}</td>
+                    <td>${userDetails.total_expenses}</td>
+                </tr>`;
+            leaderboardTableBody.innerHTML += row;
+        }
+    } catch (error) {
+        console.error("Error showing leaderboard", error.message);
+    }
 }
 
 downloadReports.addEventListener('click',async (e)=>{
@@ -119,7 +115,6 @@ downloadReportsHistory.addEventListener('click',async (e)=>{
     try {
         const token = localStorage.getItem('token');
         const response = await axios.get('/downloadHistory',{headers:{"Authorization":token}});
-        console.log('click')
         addUrlsToUI(response.data.history);
         
     } catch (error) {

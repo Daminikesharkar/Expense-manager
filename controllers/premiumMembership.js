@@ -20,8 +20,6 @@ exports.purchasePremiumMembership = async(req,res)=>{
             key_id: key_id,
             key_secret:key_secret
         })
-            
-        console.log("Inside2",rzp);
 
         var options = {
             amount: 100000,
@@ -39,12 +37,12 @@ exports.purchasePremiumMembership = async(req,res)=>{
             }).then(()=>{
                 return res.status(200).json({ orderId: order.id, amount: order.amount, key_id: key_id });
             }).catch((err)=>{
-                console.log(err);
+                console.error("Error creating order", err.message);
             })
         })
         
     } catch (error) {
-        console.log(error)
+        console.error("Error buying premium", error.message);
     }
 }
 
@@ -61,12 +59,12 @@ exports.updateTransaction = async(req,res) =>{
             promise2
         ]).then(()=>{
             return res.status(200).json({ success: true, msg: "Transaction Successful" ,
-                                        token:jwt.sign({ userId: req.user.id, ispremiumuser: true }, 'secretKey', { expiresIn: '1h' })});
+                                        token:jwt.sign({ userId: req.user.id, ispremiumuser: true }, process.env.SECRETKEY, { expiresIn: '1h' })});
         }).catch((err)=>{
-            console.log(err);
+            console.error("Error updating transaction", err.message);
         })       
                 
     } catch (error) {
-        console.log(error)
+        console.error("Error updating transaction", error.message);
     }
 }
