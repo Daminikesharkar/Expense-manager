@@ -1,4 +1,4 @@
-import axios from 'https://cdn.jsdelivr.net/npm/axios@1.5.1/+esm'
+// import axios from 'https://cdn.jsdelivr.net/npm/axios@1.5.1/+esm'
 
 //add expense logic
 const expenseform = document.getElementById('add-expense-form');

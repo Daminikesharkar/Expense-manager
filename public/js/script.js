@@ -1,4 +1,4 @@
-import axios from 'https://cdn.jsdelivr.net/npm/axios@1.5.1/+esm'
+// import axios from 'https://cdn.jsdelivr.net/npm/axios@1.5.1/+esm'
 
 //Pop up signin and signup forms
 const signInButton = document.querySelector(".signin");

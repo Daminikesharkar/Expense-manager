@@ -1,4 +1,4 @@
-import axios from 'https://cdn.jsdelivr.net/npm/axios@1.5.1/+esm';
+// import axios from 'https://cdn.jsdelivr.net/npm/axios@1.5.1/+esm';
 
 const forgetPasswordForm = document.getElementById('forget-password-form');
 const email = document.getElementById('forget-password-email');
