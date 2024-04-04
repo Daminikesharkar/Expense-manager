@@ -1,12 +1,9 @@
-const path = require('path');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
 const Users = require('../models/user');
 
-const indexFilePath = path.join(__dirname, '../views/index.html');
-
 exports.getIndex = (req, res) => {
-    res.sendFile(indexFilePath);
+    res.sendFile('index.html', { root: 'views' });
 };
 
 exports.postUser = async (req, res) => {

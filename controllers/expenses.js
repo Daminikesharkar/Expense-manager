@@ -1,12 +1,9 @@
 const Expense = require('../models/expense');
-const path = require('path');
 const Users = require('../models/user');
 const sequelize = require('../util/database');
 
-const expensePagePath = path.join(__dirname, '../views/addExpense.html');
-
 exports.showExpensePage = (req,res)=>{
-    res.sendFile(expensePagePath);
+    res.sendFile('addExpense.html', { root: 'views' });
 }
 
 exports.getExpense = async (req,res)=>{
@@ -32,7 +29,6 @@ exports.getExpense = async (req,res)=>{
             lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE)
         });
     } catch (error) {
-        console.error("Error getting all products:", error);
         res.status(500).json({ error: 'Error getting all products' });
     }
 }

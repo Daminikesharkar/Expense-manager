@@ -61,7 +61,6 @@ exports.showLeaderboard = async (req, res) => {
 
         return res.json({ userData: userData });
     } catch (error) {
-        console.error(error);
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 };
@@ -76,7 +75,6 @@ exports.downloadFile = async(req,res)=>{
       const filename = `Products${req.user.id}/${new Date()}.txt`;
 
       const fileurl = await awsservice.uploadToS3(stringifiedProducts,filename);
-      console.log(fileurl);
 
       const newUrl = await downloads.create({
           downloadUrl:fileurl,

@@ -5,12 +5,9 @@ const Order = require('../models/order');
 const jwt = require('jsonwebtoken')
 const key_id = process.env.RAZORPAY_KEY_ID;
 const key_secret = process.env.RAZORPAY_KEY_SECRET;
-const path = require('path');
-
-const premiumFilePath = path.join(__dirname, '../views/premiumFeatures.html');
 
 exports.getPremiumPage= (req, res) => {
-    res.sendFile(premiumFilePath);
+    res.sendFile('premiumFeatures.html', { root: 'views' });
 };
 
 exports.purchasePremiumMembership = async(req,res)=>{
@@ -28,7 +25,6 @@ exports.purchasePremiumMembership = async(req,res)=>{
         
         rzp.orders.create(options,(err,order)=>{
             if(err){
-                console.error(err);
                 return res.status(500).json({ error: 'Internal Server Error' });  
             }
             req.user.createOrder({
@@ -37,12 +33,12 @@ exports.purchasePremiumMembership = async(req,res)=>{
             }).then(()=>{
                 return res.status(200).json({ orderId: order.id, amount: order.amount, key_id: key_id });
             }).catch((err)=>{
-                console.error("Error creating order", err.message);
+                res.status(500).json({error: 'Error creating order'});
             })
         })
         
     } catch (error) {
-        console.error("Error buying premium", error.message);
+        res.status(500).json({error: 'Error creating order'});
     }
 }
 
@@ -61,10 +57,10 @@ exports.updateTransaction = async(req,res) =>{
             return res.status(200).json({ success: true, msg: "Transaction Successful" ,
                                         token:jwt.sign({ userId: req.user.id, ispremiumuser: true }, process.env.SECRETKEY, { expiresIn: '1h' })});
         }).catch((err)=>{
-            console.error("Error updating transaction", err.message);
+            res.status(500).json({err: 'Error updating order'});
         })       
                 
     } catch (error) {
-        console.error("Error updating transaction", error.message);
+        res.status(500).json({error: 'Error updating order'});
     }
 }

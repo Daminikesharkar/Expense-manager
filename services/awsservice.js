@@ -20,10 +20,8 @@ exports.uploadToS3 = async (data, filename) =>{
     
         s3bucket.upload(params,(err,s3response)=>{
             if(err){
-                console.log("Something went wrong",err);
                 reject(err);
             }else{
-                console.log('Success',s3response);
                 resolve(s3response.Location);
             }
         });

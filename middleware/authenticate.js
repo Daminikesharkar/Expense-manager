@@ -16,6 +16,6 @@ exports.authenticate = async (request, response, next) => {
             });
         }
     } catch (err) {
-        response.status(500).json({ message: 'Internal Server Error - please login again' });
+        response.status(500).json({ err: 'Internal Server Error - please login again' });
     }
 }

@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
+require('dotenv').config();
 
 const mainRoutes = require('./routes/main');
 const premiumRoutes = require('./routes/premium');
@@ -26,10 +27,10 @@ User.hasMany(Order);
 Order.belongsTo(User,{constraints:true, onDelete:'CASCADE'})
 
 User.hasMany(Downloads);
-Downloads.belongsTo(User,{constraints:true, onDelete:'CASCADE'})
+Downloads.belongsTo(User,{constraints:true, onDelete:'CASCADE'});
 
 User.hasMany(forgetpassword);
-forgetpassword.belongsTo(User,{constraints:true, onDelete:'CASCADE'})
+forgetpassword.belongsTo(User,{constraints:true, onDelete:'CASCADE'});
 
 // sequelize.sync({ alter: true })
 sequelize.sync();
@@ -40,6 +41,6 @@ app.use(resetPasswordRoutes);
 
 app.use(cors());
 
-app.listen(3000,()=>{
-    console.log('server is live on port 3000')
+app.listen(process.env.Port || 3000,()=>{
+    console.log(`server is live on port ${process.env.Port}`);
 })

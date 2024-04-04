@@ -1,4 +1,3 @@
-const path = require('path');
 const nodemailer = require("nodemailer");
 const uuid = require('uuid');
 const bcrypt = require('bcrypt');
@@ -6,22 +5,17 @@ const bcrypt = require('bcrypt');
 const User = require('../models/user');
 const forgetPassword = require('../models/password');
 
-const forgetPasswordPage = path.join(__dirname,'../views/forgetpasswordPage.html');
-
 exports.getforgetPasswordPage = (req,res)=>{
-    res.sendFile(forgetPasswordPage);
+    res.sendFile('forgetpasswordPage.html', { root: 'views' });
 }
 
 exports.getEmailToSendResetLink = async (req,res)=>{
 
     try {
         const {email} = req.body;
-        console.log(email)
-
-        const user = await User.findOne({where: {email: email}});
+         const user = await User.findOne({where: {email: email}});
 
         if(user){
-            console.log(user);
             const id = uuid.v4();
 
             await forgetPassword.create({
@@ -40,11 +34,11 @@ exports.getEmailToSendResetLink = async (req,res)=>{
             });
     
             let info = await transporter.sendMail({
-                from: '"The Expense Manager " <lila.wiza@ethereal.email>',
+                from: `"The Expense Manager " <${process.env.FROM_ADDRESS}>`,
                 to: email, 
                 subject: "Reset your password to login back", 
                 text: "Please find below link to reset your password and login back",
-                html: `<a href="http://localhost:3000/forgetPassword/${id}">Reset password</a>`, 
+                html: `<a href="${process.env.WEBSITE_ADDRESS}/forgetPassword/${id}">Reset password</a>`, 
             });
             
             return res.status(200).json({
@@ -92,8 +86,6 @@ exports.updatePassword = async (req,res)=>{
     try {
         const {newpassword} = req.query;
         const id = req.params.id;
-
-        console.log(newpassword,id);
 
         const resetPassReq = await forgetPassword.findOne({where:{id:id}});
         if(resetPassReq){
