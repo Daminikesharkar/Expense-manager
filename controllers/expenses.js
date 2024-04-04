@@ -3,8 +3,7 @@ const path = require('path');
 const Users = require('../models/user');
 const sequelize = require('../util/database');
 
-// const expensePagePath = path.join(__dirname, '../views/addExpense.html');
-const expensePagePath = path.join(__dirname, '../views/test2.html');
+const expensePagePath = path.join(__dirname, '../views/addExpense.html');
 
 exports.showExpensePage = (req,res)=>{
     res.sendFile(expensePagePath);

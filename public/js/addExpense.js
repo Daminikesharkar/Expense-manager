@@ -1,77 +1,13 @@
 import axios from 'https://cdn.jsdelivr.net/npm/axios@1.5.1/+esm'
-// const Razorpay = require('razorpay');
 
-const form = document.getElementById('expenseForm');
+//add expense logic
+const expenseform = document.getElementById('add-expense-form');
 
-const amount = document.getElementById('amount');
-const description = document.getElementById('description');
+const amount = document.getElementById('price');
+const description = document.getElementById('item');
 const category = document.getElementById('category');
 
-
-const premium = document.getElementById('premium');
-premium.addEventListener('click', ()=>{
-    const token = localStorage.getItem('token');
-    console.log(token);
-    axios.get('/buyPremium',{headers:{"Authorization":token}})
-        .then((response)=>{
-            console.log(response.data)
-            if (!response.data.key_id) {
-                throw new Error("No key_id found in the response");
-            }
-            const options = {
-                "key": response.data.key_id,
-                "order_id": response.data.orderId,
-                "amount":response.data.amount,
-                "handler": async function (response) {
-
-                    const transactionStatus= await axios.post('/updateTransaction',{
-                        order_id : response.razorpay_order_id,
-                        payment_id:response.razorpay_payment_id,
-                    },{headers:{"Authorization":token}});
-                    
-                    alert(transactionStatus.data.msg);
-                    document.getElementById("premium").style.visibility = "hidden";
-                    document.getElementById("message").innerHTML="You are a premium user";
-
-                    localStorage.setItem('token',transactionStatus.data.token);
-                },
-            }
-
-            var razorpay = new Razorpay(options);
-            razorpay.open();
-            
-            razorpay.on('payment.failed', function (response) {
-                console.log(response);
-                alert('Something went wrong Transaction failed');
-    
-            });
-        })
-        .catch(error=>{
-            console.log(error);
-        })
-})
-
-function addExpense(userData){
-    const token = localStorage.getItem('token');
-    axios.post('/addExpense',userData,{headers:{"Authorization":token}})
-        .then((response)=>{
-            console.log("Expense added!",response);
-            addUser(response.data.expense);
-
-        }).catch((error)=>{
-            console.log(error);
-        })
-}
-
-function deleteExpense(id){
-    const token = localStorage.getItem('token');
-    axios.get('/deleteExpense'+`/${id}`,{headers:{"Authorization":token}})
-       .then((response)=>{ 
-           console.log(response.data.book )         
-   })
-}
-
-form.addEventListener("submit",(event)=>{
+expenseform.addEventListener("submit",(event)=>{
     event.preventDefault()
 
     const userData ={
@@ -81,104 +17,181 @@ form.addEventListener("submit",(event)=>{
     }
 
     addExpense(userData);
-    form.reset();
+    console.log(userData);
+    expenseform.reset();
 })
+
+async function addExpense(userData) {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await axios.post('/addExpense', userData, { headers: { "Authorization": token } });
+        addUser(response.data.expense);
+    } catch (error) {
+        console.error("Error adding product", error.message);
+    }
+}
 
 function addUser(userData){
-    const ulList = document.getElementById('newExpense');
+    const tbody = document.querySelector(".tablecontainer table tbody");
+    const newRow = document.createElement("tr");
 
-    const li = document.createElement('li');
-    li.className="expenseList";
-    li.setAttribute('data-user-data', JSON.stringify(userData));
+    newRow.innerHTML = `
+        <td>${userData.description}</td>
+        <td>${userData.amount}</td>
+        <td>${userData.category}</td>
+        <td><a href='#' class=delete data-user-data='${JSON.stringify(userData)}'>Remove</a></td>
+    `;
 
-    var btn = document.createElement("button");
-    btn.className = "btn delete";
-
-    var editBtn = document.createElement("button");
-    editBtn.className = "btn edit";
-
-    var text = document.createTextNode("Amount: "+userData.amount+" description: "+userData.description+" category: "+userData.category);
-    li.appendChild(text);
-
-
-    btn.appendChild(document.createTextNode("Delete"));
-    editBtn.appendChild(document.createTextNode("Edit"));
-
-    li.appendChild(btn);
-    li.appendChild(editBtn);
-
-    ulList.appendChild(li);
+    if (tbody.firstChild) {
+        tbody.insertBefore(newRow, tbody.firstChild);
+    } else {
+        tbody.appendChild(newRow);
+    }
 }
 
-const ulList = document.getElementById('newExpense');
-ulList.addEventListener('click',(e)=>{
+
+const table = document.getElementById('expense_table');
+table.addEventListener('click',(e)=>{
+    e.preventDefault();
     if(e.target.classList.contains('delete')){
-        const li = e.target.parentElement;
-        const userData = JSON.parse(li.getAttribute('data-user-data'))
-        
-        deleteExpense(userData.id);
-        li.remove();
+        const row = e.target.parentElement.parentElement;
+
+        const userDataString = e.target.getAttribute("data-user-data");
+        const userData = JSON.parse(userDataString);
+        deleteExpense(userData.id,row);
+        row.remove(); 
     }
 })
 
-function displayExpenses(){
-    const token = localStorage.getItem('token');
-    axios.get('/getExpenses',{headers:{"Authorization":token}})
-        .then((response)=>{
-            const length = Object.keys(response.data.expense).length;
-            for(let i=0;i<length;i++){
-                const data = response.data.expense[i];
-                console.log(data);
-                addUser(data);
-            }
-    })
-}
-function parseJwt (token) {
-    var base64Url = token.split('.')[1];
-    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join(''));
-
-    return JSON.parse(jsonPayload);
+async function deleteExpense(id) {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get(`/deleteExpense/${id}`, { headers: { "Authorization": token } });
+        console.log(response.data);
+        alert(response.data.message);
+    } catch (error) {
+        console.error("Error deleting product", error.message);
+    }
 }
 
-function showLeaderboardData(){
-    console.log("Inside")
-    const token = localStorage.getItem('token');
-    axios.get('/showLeaderboard',{headers:{"Authorization":token}})
-        .then((response)=>{
-            const leaderboard = document.getElementById('Learboard-content')
-            leaderboard.innerHTML += '<h1>Leader board</h1>';
-            console.log(response.data.userData)
-            response.data.userData.forEach(userDetails => {
-                console.log(userDetails)
-                leaderboard.innerHTML += `<li> Name - ${userDetails.username} Total Expense - ${userDetails.total_expenses} </li>`;
-            });
+//pagination
+const ExpensesPerPageSelect = document.getElementById('ExpensesPerPage');
+const savePreferenceBtn = document.getElementById('savePreferenceBtn');
+
+function getExpensesPerPage() {
+    return localStorage.getItem('productsPerPage') || 10; 
+}
+
+function setExpensesPerPage(value) {
+    localStorage.setItem('productsPerPage', value);
+}
+
+savePreferenceBtn.addEventListener('click', (event)=> {
+    event.preventDefault();
+    const value = ExpensesPerPageSelect.value;
+    console.log(value);
+    setExpensesPerPage(value);
+    location.reload();
+});
+
+function displayExpensesPerPagePreference() {
+    ExpensesPerPageSelect.value = getExpensesPerPage();
+}
+
+displayExpensesPerPagePreference();
+
+const pagination = document.getElementById('pagination');
+
+async function getExpenses(page){
+    try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get(`/getExpenses/?page=${page}`,{headers:{"Authorization":token}});
+
+        displayExpenses(response.data.expenses);
+        showPagination(response.data);
+        
+    } catch (error) {
+        console.error("Error getting all expenses", error.message);
+    }
+}
+
+function showPagination({
+    currentPage,
+    hasNextPage,
+    nextPage,
+    hasPreviousPage,
+    previousPage,
+    lastPage,
+}){
+    pagination.innerHTML='';
+
+    if(hasPreviousPage){
+        const btn2 = document.createElement('button');
+        btn2.innerHTML = previousPage;
+        btn2.addEventListener('click',()=>{
+            getExpenses(previousPage);
         })
-        .catch((error)=>{
-            console.log(error);
+        pagination.appendChild(btn2);
+    }
+
+    const btn1 = document.createElement('button');
+    btn1.innerHTML = `<h3>${currentPage}</h3>`;
+    btn1.addEventListener('click',()=>{
+        getExpenses(currentPage);
+    })
+    pagination.appendChild(btn1);
+
+    if(hasNextPage){
+        const btn3 = document.createElement('button');
+        btn3.innerHTML = nextPage;
+        btn3.addEventListener('click',()=>{
+            getExpenses(nextPage);
         })
+        pagination.appendChild(btn3);
+    }
 }
 
-function addLeaderboardDiv(){
-    document.getElementById("show-leaderboard-div").style.visibility = "visible";
-    
-    const leaderboardBtn = document.getElementById('show-leaderboard-btn');
-    leaderboardBtn.addEventListener('click',(e)=>{
-        console.log("clicked")
-        showLeaderboardData();
-    })
+function displayExpenses(expenses){
+    const tbody = document.querySelector(".tablecontainer table tbody");
+    tbody.innerHTML = '';
+
+    const length = Object.keys(expenses).length;
+    for(let i=0;i<length;i++){
+        const data = expenses[i];
+        addUser(data);
+    }
 }
+
+async function displayAllExpenses(){
+    const page = 1;
+    const itemsPerPage = getExpensesPerPage();
+
+    try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get(`/getExpenses/?page=${page}&itemsPerPage=${itemsPerPage}`,{headers:{"Authorization":token}});
+
+        displayExpenses(response.data.expenses);
+        showPagination(response.data);
+        
+    } catch (error) {
+        console.error("Error getting all expenses", error.message);
+    }
+}
+
+const logout = document.getElementById('logout');
+
+logout.addEventListener('click',async (e)=>{
+    e.preventDefault();
+    try {
+        localStorage.removeItem('token');
+        alert('User logged out successfully');
+        window.location.href = `/`;
+        
+    } catch (error) {
+        console.error("Error logging out", error.message);
+    }
+})
 
 window.addEventListener('load',()=>{
-    displayExpenses();
-
-    const token = localStorage.getItem('token');
-    const decoded = parseJwt(token);
-    if(decoded.ispremiumuser){
-        document.getElementById("premium").style.visibility = "hidden";
-        document.getElementById("message").innerHTML="You are a premium user";
-        addLeaderboardDiv();
-    }
+    displayAllExpenses();
 })

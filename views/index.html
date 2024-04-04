@@ -1,41 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Expense manager</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Expense tracker</title>
+    <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+    <link rel="stylesheet" href="css/test.css" />
+  </head>
+  <body>
 
-    <link rel="icon" src="images/EXPENSE MANAGER.jpg" type="image/x-icon">
-    <link rel="stylesheet" href="css/styles.css">
-</head>
-<body>
-    <div class="container">
-        <nav class="nav-container">
-            <img src="images/EXPENSE MANAGER.jpg" alt="Company-Logo">
-            <h1>WELCOME TO EXPENSE MANAGER</h1>         
-        </nav>
-
-        <div class="inner-container">
-            <div class="information-inn-container">
-                <h3>
-                    Control your expenses better than your competition. ...
-                </h3>
-            </div>
-            <div class="image-inn-container">
-                <img src="images/home-page-image.png" alt="home-page-image">
-            </div>
-
-            <div class = "menu-inn-container">
-                <a href="/loginPage" class="login" id="login">Login</a>
-                <a href="/signupPage" class="signup" id="signup">SignUp</a>
-            </div>
-
+    <header class="header">
+      <nav class="navbar">
+        <h2 class="logo"><a href="#">ExpenseTracker</a></h2>
+        <input type="checkbox" id="menu-toggle" />
+        <label for="menu-toggle" id="hamburger-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
+            <path d="M3 12h18M3 6h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </label>
+        <ul class="links">
+          <li><a href="#">Home</a></li>
+          <li><a href="#">About Us</a></li>
+          <li><a href="#">Services</a></li>
+          <li><a href="#">Contact Us</a></li>
+        </ul>
+        <div class="buttons">
+          <a href="#" class="signin">Sign In</a>
+          <a href="#" class="signup">Sign Up</a>
         </div>
+      </nav>
+    </header>
 
-        <footer class="footer-container">
-            <p>&copy; 2023 Damini PvtLtd. All rights reserved</p>
-        </footer>
-    </div> 
-    <script type="module" src="js/home.js"></script>
-</body>
+    <!-- hero section -->
+    <section class="hero-section">
+      <div class="hero">
+        <h2>Expense Tracker Manager</h2>
+        <p>
+            Welcome to Expense Tracker Manager! Take charge of your finances and shape your future with us. 
+            Let's make tracking expenses exciting and empowering. Join now!
+        </p>
+        <div class="buttons">
+          <a href="#" class="join">Join Now</a>
+          <a href="#" class="learn">Learn More</a>
+        </div>
+      </div>
+
+      <div class="img">
+        <img src="images/homepageImage.png" alt="hero image" />
+      </div>
+    </section>
+
+    <!-- Login Popup -->
+    <div id="login-popup" class="popup">
+        <div class="popup-content">
+            <span class="close-popup">×</span>
+            <h3>Login</h3>
+            <form id="login-form">
+                <input id="login-email" type="email" placeholder="Enter your email" required>
+                <input id="login-password" type="password" placeholder="Enter your password" required>
+                <div class="forgot-password">
+                    <a id="forget-password" href="#">Forgot Password?</a>
+                </div>
+                <button type="submit">Login</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Signup Popup -->
+    <div id="signup-popup" class="popup">
+        <div class="popup-content">
+            <span class="close-popup">×</span>
+            <h3>Signup</h3>
+            <form id="signup-form">
+                <input id="signup-username" type="text" placeholder="Enter your username" required>
+                <input id="signup-email" type="email" placeholder="Enter your email" required>
+                <input id="signup-password" type="password" placeholder="Enter your password" required>
+                <button type="submit">Sign Up</button>
+            </form>
+        </div>
+    </div>
+
+  <script type="module" src="js/script.js"></script>
+  </body>  
 </html>
