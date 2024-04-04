@@ -1,6 +1,3 @@
-// import axios from 'https://cdn.jsdelivr.net/npm/axios@1.5.1/+esm'
-
-//add expense logic
 const expenseform = document.getElementById('add-expense-form');
 
 const amount = document.getElementById('price');
@@ -17,7 +14,6 @@ expenseform.addEventListener("submit",(event)=>{
     }
 
     addExpense(userData);
-    console.log(userData);
     expenseform.reset();
 })
 
@@ -55,7 +51,6 @@ table.addEventListener('click',(e)=>{
     e.preventDefault();
     if(e.target.classList.contains('delete')){
         const row = e.target.parentElement.parentElement;
-
         const userDataString = e.target.getAttribute("data-user-data");
         const userData = JSON.parse(userDataString);
         deleteExpense(userData.id,row);
@@ -67,7 +62,6 @@ async function deleteExpense(id) {
     try {
         const token = localStorage.getItem('token');
         const response = await axios.get(`/deleteExpense/${id}`, { headers: { "Authorization": token } });
-        console.log(response.data);
         alert(response.data.message);
     } catch (error) {
         console.error("Error deleting product", error.message);
@@ -89,7 +83,6 @@ function setExpensesPerPage(value) {
 savePreferenceBtn.addEventListener('click', (event)=> {
     event.preventDefault();
     const value = ExpensesPerPageSelect.value;
-    console.log(value);
     setExpensesPerPage(value);
     location.reload();
 });

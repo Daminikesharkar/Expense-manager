@@ -1,5 +1,3 @@
-// import axios from 'https://cdn.jsdelivr.net/npm/axios@1.5.1/+esm'
-
 const showLeaderboardButton = document.querySelector(".show-leaderboard");
 const downloadReportsButton = document.querySelector(".download-reports");
 const leaderboardTable = document.getElementById("leaderboard-div");
@@ -58,7 +56,6 @@ premium.addEventListener('click', async (e) => {
         razorpay.open();
 
         razorpay.on('payment.failed', function (response) {
-            console.log(response);
             alert('Something went wrong. Transaction failed');
         });
 
@@ -123,15 +120,11 @@ downloadReportsHistory.addEventListener('click',async (e)=>{
 });
 
 function addUrlsToUI(urls){
-
     historytableContainer.style.display = 'block';
-
-    const tableBody = document.querySelector('.history-url-table tbody');
-   
+    const tableBody = document.querySelector('.history-url-table tbody');   
     tableBody.innerHTML = '';
 
     const length = Object.keys(urls).length;
-
     for(let i=0;i<length;i++){
         const url = urls[i];
 
@@ -139,8 +132,7 @@ function addUrlsToUI(urls){
         row.innerHTML = `
             <td>${i+1}</td>
             <td><a href="${url.downloadUrl}">myDownload-${url.createdAt}</a></td>
-        `;
-    
+        `;    
         tableBody.appendChild(row);        
     }
 }

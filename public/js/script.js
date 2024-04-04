@@ -1,6 +1,3 @@
-// import axios from 'https://cdn.jsdelivr.net/npm/axios@1.5.1/+esm'
-
-//Pop up signin and signup forms
 const signInButton = document.querySelector(".signin");
 const signUpButton = document.querySelector(".signup");
 const loginPopup = document.getElementById("login-popup");
@@ -49,7 +46,6 @@ async function postData(userData) {
 
         if (response.status === 200) {
             alert("Signed Up successfully, please login now!");
-            console.log("User successfully added!");
             window.location.href = `/`;
         }else if(response.status === 400) {
             alert(response.data.message);
@@ -58,7 +54,6 @@ async function postData(userData) {
             alert(response.data.message)
             throw new Error("Failed to add user" + response.status);
         }
-
     } catch (error) {
         console.error("Error adding User", error.message);
     }
@@ -74,7 +69,6 @@ signupform.addEventListener("submit",(event)=>{
     }
 
     postData(userData);
-    console.log(userData);
     signupform.reset();
 })
 
@@ -101,11 +95,9 @@ async function loginUser(userData) {
             window.location.href = `/userExpenses`;
 
         }else if(response.status === 400) {
-            console.log(response.data.message);
             alert(response.data.message)
             throw new Error("Failed to log In:" + response.data.message);
         }else if(response.status === 401) {
-            console.log(response.data.message);
             alert(response.data.message)
             throw new Error("Failed to log In:" + response.data.message);
         }
