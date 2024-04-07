@@ -1,5 +1,7 @@
 const express = require('express');
 const path = require('path');
+const morgan = require('morgan');
+const fs = require('fs');
 require('dotenv').config();
 
 const mainRoutes = require('./routes/main');
@@ -14,6 +16,9 @@ const Downloads = require('./models/download');
 const forgetpassword = require('./models/password');
 
 const app = express();
+
+const accessLogStream = fs.createWriteStream('access.log', { flags: 'a' });
+app.use(morgan(':method :url :status :response-time ms', { stream: accessLogStream }));
 
 app.use(express.urlencoded({extended: false }));
 app.use(express.static(path.join(__dirname,'public')));
