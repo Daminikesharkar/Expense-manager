@@ -1,6 +1,5 @@
 const express = require('express');
 const path = require('path');
-const cors = require('cors');
 require('dotenv').config();
 
 const mainRoutes = require('./routes/main');
@@ -39,7 +38,6 @@ app.use(mainRoutes);
 app.use(premiumRoutes);
 app.use(resetPasswordRoutes);
 
-app.use(cors());
 
 app.listen(process.env.Port || 3000,()=>{
     console.log(`server is live on port ${process.env.Port}`);

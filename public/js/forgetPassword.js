@@ -13,7 +13,7 @@ forgetPasswordForm.addEventListener('submit',(e)=>{
 
 async function sendEmail(userdata){
     try {
-        const response = axios.post('/forgetPassword',userdata);
+        const response = await axios.post('/forgetPassword',userdata);
     } catch (error) {
         console.error("Error sending request", error.message);
     }
